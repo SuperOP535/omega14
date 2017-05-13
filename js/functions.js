@@ -76,39 +76,41 @@ global.parseChat = function(chatObj, parentState) {
 	}
 }
 
-global.timeSince = function(date) {
-
-    var seconds = Math.floor((new Date() - date) / 1000);
-
-    var interval = Math.floor(seconds / 31536000);
-
-    if (interval > 1) {
-        return interval + " years";
-    }
-    interval = Math.floor(seconds / 2592000);
-    if (interval > 1) {
-        return interval + " months";
-    }
-    interval = Math.floor(seconds / 86400);
-    if (interval > 1) {
-        return interval + " days";
-    }
-    interval = Math.floor(seconds / 3600);
-    if (interval > 1) {
-        return interval + " hours";
-    }
-    interval = Math.floor(seconds / 60);
-    if (interval > 1) {
-        return interval + " minutes";
-    }
-    return Math.floor(seconds) + " seconds";
+global.timeName = function(date){
+	var delta = Math.abs(date - +new Date()) / 1000;
+	
+	var str = '';
+	// calculate (and subtract) whole days
+	var days = Math.floor(delta / 86400);
+	delta -= days * 86400;
+	
+	if(1 < days)str += days + ' Days, ';
+	else if(0 < days)str += days + ' Day, ';
+	 
+	// calculate (and subtract) whole hours
+	var hours = Math.floor(delta / 3600) % 24;
+	delta -= hours * 3600;
+	if(1 < hours)str += hours + ' Hours, ';
+	else if(0 < hours)str += hours + ' Hour, ';
+	
+	// calculate (and subtract) whole minutes
+	var minutes = Math.floor(delta / 60) % 60;
+	delta -= minutes * 60;
+	if(1 < minutes)str += minutes + ' Minutes, ';
+	else if(0 < minutes)str += minutes + ' Minute, ';
+	
+	// what's left is seconds
+	var seconds = ~~(delta % 60);
+	if(1 < seconds)str += seconds + ' Seconds, ';
+	else if(0 < seconds)str += seconds + ' Second, ';
+	
+	
+	return str.slice(0, -2);
 }
 
 global.isUUID = function (str){
 	return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(str); 
 }
-
-var jquery = fs.readFileSync("./js/jquery.js");
 
 global.getUrlTitle = function(url,callback){
 	tr.request(url, function (err, res, body) {
@@ -127,6 +129,9 @@ global.getUrlTitle = function(url,callback){
 	});
 }
 
+global.isAlphaNumeric = function(str){
+	return !/[^a-zA-Z0-9]/.test(str);
+}
 global.getRandom = function(low, high) {
 	return ~~(Math.random() * (high - low)) + low;
 }
@@ -135,12 +140,29 @@ global.randomArray = function(a){
 	return a[getRandom(0,a.length)];
 }
 
+global.hex2uuid = function(hex){
+	return hex.substr(0,8) + '-' + hex.substr(8,4) + '-' + hex.substr(12,4) + '-' + hex.substr(16,4) + '-' + hex.substr(20,12);
+}
+
 Number.prototype.comma = function(){
 	return this.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 }
 
 String.prototype.comma = function(){
 	return this.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+}
+
+String.prototype.Replace = function(a,b){
+	return this.split(a || ',').join(b || '');
+}
+
+String.prototype.removeIllegal = function(){
+	var text = this.Replace('\x7F').Replace('\xA7');
+	for(var i = 0;i<32;i++){
+		text = text.Replace(String.fromCharCode(i));
+	}
+	
+	return text;
 }
 
 global.hastebin = function(text,callback){

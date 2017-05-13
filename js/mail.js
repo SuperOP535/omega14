@@ -27,7 +27,7 @@ commands['mail'] = function(data){
 			}
 			
 			hastebin(textTable(rows),function(url){
-				data.pm('Mail: ' + url);
+				data.pm('Mail: ' + url + ' Do !clearmail to delete all mail.');
 			});
 		}
 	})
@@ -37,7 +37,7 @@ commands['sendmail'] = function(data){
 	var parts = data.text.split(' ');
 	if(parts.length < 2)return ;
 	var name = name = parts[0];
-	databaseUUID(name,function(uuid){
+	realDatabaseUUID(name,function(uuid){
 		if(!uuid){
 			data.respond(data.name + ' -> ' + name + ': User not in database.');
 			return;

@@ -2,16 +2,17 @@ var stripAnsi = require('strip-ansi');
 
 global.chat = [];
 global.commands = {};
-global.tps = 20;
+global.tps = null;
 
 var rateLimited = {}
 
 process.stdin.on('data', function (text) {
-	client.write('chat', {message: text.toString().substr(0,100)});
+	console.log('what')
+	client.write('chat', {message: text.toString().substr(0,256).removeIllegal()});
 });
 
 chat.pm = function(name,text){
-	this.command('msg '+ name.split(' ')[0] + ' ' + text);
+	client.write('chat', {message: ('/w '+ name.split(' ')[0] + ' ' + text).substr(0,256).removeIllegal()});
 }
 
 chat.say = function(text){
@@ -19,6 +20,9 @@ chat.say = function(text){
 	this.push(text);
 }
 
+chat.bluelight = function(text){
+	this.push('`> ' + text.Replace('#'));
+}
 chat.highlight = function(text){
 	this.push('> ' + text);
 }
@@ -27,7 +31,9 @@ chat.command = function(text){
 	this.push('/' + text);
 }
 
-setInterval(function(){
+
+function chatSay(){
+	setTimeout(chatSay,config.chatDelay);
 	while(1){
 		if(chat.length == 0)return;
 		if(chat[0] == chat[1]){
@@ -35,11 +41,22 @@ setInterval(function(){
 			continue;
 		}
 		
-		client.write('chat', {message: chat[0].substr(0,100)});
+		client.write('chat', {message: chat[0].substr(0,256).removeIllegal()});
 		chat.splice(0, 1);
 		return;
 	}
-},config.chatDelay);
+
+}
+
+setTimeout(chatSay,config.chatDelay);
+
+
+function spam(){
+	if(0 < config.spam.messages.length)chat.push(randomArray(config.spam.messages).substr(0,256))
+	setTimeout(spam, config.spam.rate);
+}
+
+setTimeout(spam, config.spam.rate);
 
 global.chatInput = function(packet) {
 	var j = JSON.parse(packet.message);
@@ -48,12 +65,16 @@ global.chatInput = function(packet) {
 	console.log(message);
 	var text = stripAnsi(message);
 	if(handleDialog(text))return;
-	//if(handleTPA(text))return;
 	if(handleTPS(text))return;
 	if(handlePM(text))return;
+	if(handleMurder(text))return;
 }
 
 function handeCommand(name,cmd,private,text){
+	if(config.ignore.indexOf(getUUID(name)) != -1)return;
+		
+	cmd = cmd.toLowerCase();
+	if(!(cmd in commands))return;
 	if(!isAdmin(name)){
 		if(name in rateLimited)return;
 		rateLimited[name] = true;
@@ -62,9 +83,7 @@ function handeCommand(name,cmd,private,text){
 		},config.commandRate);
 	}
 	
-	cmd = cmd.toLowerCase();
-	
-	if(cmd in commands)commands[cmd]({
+	commands[cmd]({
 		name: name,
 		cmd: cmd,
 		private: private,
@@ -73,7 +92,7 @@ function handeCommand(name,cmd,private,text){
 			if(this.private){
 				chat.pm(this.name,text);
 			}else{
-				chat.highlight(text);
+				chat.bluelight(text);
 			}
 		},
 		pm: function(text){
@@ -97,7 +116,7 @@ function handlePM(text){
 
 var lastTPS = [];
 function handleTPS(text){
-	var data = text.split('*').join('').split(' ').join('').split('TPSfromlast1m,5m,15m:')[1];
+	var data = text.Replace('*').Replace(' ').split('TPSfromlast1m,5m,15m:')[1];
 	if(!data)return false;
 	global.tps = data.split(',')[0] * 1;
 	if(tps <= config.tpsTest.min){
@@ -121,30 +140,18 @@ function handleTPS(text){
 	return true;
 }
 
-
-function handleTPA(text){
-	var compare = " has requested to teleport to you."
-	if(text.substr(-compare.length) != compare)return false;
-	var name = text.split(' ')[0];
-	
-	if(isAdmin(name)){
-		console.log('accept')
-		client.write('chat', {message: '/tpaccept'});
-		//chat.command('tpdeny');
-	}else{
-		chat.command('tpdeny');
-	}
-	return true;
-}
-
 function handleDialog(text){
 	if(text[0] != '<')return false;
 	var parts = text.split('> ');
 	var name = parts[0].substr(1);
-	if(name == client.username)return true;
+	//if(name == client.username)return true;
+
 	
 	parts.splice(0, 1);
 	var dialog = parts.join('> ');
+	
+	sql.query('INSERT INTO `chatLog`(`Username`, `Message`) VALUES (?,?)', [name,dialog]);
+	
 	if(dialog[0] == '.' || dialog[0] == '!'){
 		var data = dialog.substr(1).split(' ');
 		if(0 < data.length){
