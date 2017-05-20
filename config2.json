@@ -1,0 +1,116 @@
+{
+	"timeout": 60000,
+	"client":{
+		"host": "9b9t.com",
+		"username": "-------",
+		"password": "-------",
+		"version": "1.11.2"
+	},
+	"mysql":{
+		"user": "omega14",
+		"host": "localhost",
+		"password": "--------",
+		"database": "omega14",
+		"connectionLimit" : 2
+	},
+	"postConnect": "https://shitpost.pw?nick=omega",
+	"startBalance": 7500,
+	"giveouts": {},
+	"spam":{
+		"messages":[
+			"> Do !sjm to set join message and !slm to set leave message.",
+			"> Help, https://9b9t.press/help/",
+			"> If you have map art give it to omega14 so it can be posted on https://9b9t.press/map/"
+		],
+		"rate":60000
+	},
+	"tpsTest":{
+		"interval":60000,
+		"min": 18,
+		"history": 7
+	},
+	"leaveJoinFilter":{
+		"time":60000,
+		"max": 5
+	},
+	"chatDelay": 1000,
+	"ignore": [],
+	"admins":[],
+	"deathMessages":[
+		"was slain by",
+		"was shot by",
+		"was doomed to fall by",
+		"was blown up by",
+		"was fireballed by",
+		"got finished off by",
+		"was pummeled by",
+		"was killed by",
+		"was killed while trying to hurt",
+		"walked into a cactus whilst trying to escape",
+		"drowned whilst trying to escape",
+		"was knocked into the void by",
+		"walked into a fire whilst fighting",
+		"burnt into a crisp whilst fighting",
+		"walked into danger zone due to",
+		"tried to swim in lava while trying to escape",
+		"was blown from a high place by",
+		"was shot off a ladder by",
+		"was shot off some vines by"
+	],
+	"foods":[
+		"Apple",
+		"Baked Potato",
+		"Beetroot",
+		"Beetroot Soup",
+		"Bread",
+		"Carrot",
+		"Chorus Fruit",
+		"Clownfish",
+		"Cooked Chicken",
+		"Cooked Fish",
+		"Cooked Mutton",
+		"Cooked Porkchop",
+		"Cooked Rabbit",
+		"Cooked Salmon",
+		"Cookie",
+		"Golden Apple",
+		"Enchanted Golden Apple",
+		"Golden Carrot",
+		"Melon",
+		"Mushroom Stew",
+		"Potato",
+		"Pumpkin Pie",
+		"Rabbit Stew",
+		"Raw Beef",
+		"Raw Chicken",
+		"Raw Fish",
+		"Raw Mutton",
+		"Raw Porkchop",
+		"Raw Rabbit",
+		"Raw Salmon",
+		"Steak"
+	],
+	"glicko":{
+		"tau" : 0.5,
+		"rating" : 1500,
+		"rd" : 200,
+		"vol" : 0.06	
+	},
+	"proxy":{
+		"enable": false,
+		"host": "127.0.0.1",
+		"version": "1.11.2"
+	},
+	"factions":{
+		"cost": 1
+	},
+	
+	"killCost": 5,
+	"sayCost": 5,
+	"weather": "------------",
+	"wolframalpha": "-----------------",
+	"commandRate": 5000,
+	"help": "Help, https://9b9t.press/help/",
+	"mapDir": "/var/www/html/maps/",
+	"mapUrl": "https://9b9t.press/map?id="
+}
