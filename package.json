@@ -1,29 +1,32 @@
 {
-	"dependencies": {
-		"readline": "0.0.7",
-		"ansi-color": "0.2.1",
-		"jsdom": "9.9.1",
-		"text-table": "0.2.0",
-		"redis": "2.6.3",
-		"urban": "0.3.1",
-		"quran": "0.0.8",
-		"dateformat": "2.0.0",
-		"strip-ansi": "3.0.1",
-		"wordnet": "0.1.2",
-		"request": "2.79.0",
-		"mojang": "0.4.0",
-		"glicko2": "0.8.4",
-		"sandbox":"0.8.6",
-		"victor": "1.1.0",
-		"jsdom": "9.9.1",
-		"mysql": "2.13.0",
-		"socket.io-client":"1.7.x",
-		"pngjs": "3.0.1",
-		"redwrap": "0.0.4",
-		"mineflayer": "latest",
-		"minecraft-protocol": "latest"
-	},
-	"scripts": {
-		"start": "bash start.sh"
-	}
+  "dependencies": {
+    "readline": "0.0.7",
+    "ansi-color": "0.2.1",
+    "jsdom": "9.9.1",
+    "text-table": "0.2.0",
+    "redis": "2.6.3",
+    "urban": "0.3.1",
+    "quran": "0.0.8",
+    "dateformat": "2.0.0",
+    "strip-ansi": "3.0.1",
+    "wordnet": "0.1.2",
+    "request": "2.82.0",
+    "mojang": "0.4.0",
+    "glicko2": "0.8.4",
+    "sandbox": "0.8.6",
+    "victor": "1.1.0",
+    "mysql": "2.14.0",
+    "socket.io-client": "2.0.2",
+    "pngjs": "3.0.1",
+    "redwrap": "0.0.4",
+    "mineflayer": "latest",
+    "minecraft-protocol": "latest",
+    "snyk": "^1.83.0"
+  },
+  "scripts": {
+    "start": "bash start.sh",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "snyk": true
 }
