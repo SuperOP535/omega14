@@ -6,3 +6,8 @@ patch:
   'npm:request:20160119':
     - redwrap > request:
         patched: '2018-06-25T01:38:32.682Z'
+  'npm:mime:20170907':
+    - redwrap > request > mime:
+        patched: '2018-06-26T01:38:19.196Z'
+    - redwrap > request > form-data > mime:
+        patched: '2018-06-26T01:38:19.196Z'
