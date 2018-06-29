@@ -21,7 +21,7 @@
     "redwrap": "0.0.4",
     "mineflayer": "latest",
     "minecraft-protocol": "latest",
-    "snyk": "^1.83.0"
+    "snyk": "^1.85.0"
   },
   "scripts": {
     "start": "bash start.sh",
