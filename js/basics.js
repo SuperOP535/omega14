@@ -1,11 +1,12 @@
 var urban = require('urban');
+var ddg = require('ddg-scraper');
 var wordnet = require("wordnet");
 global.request = require('request');
 var quran = require('quran');
 var sandbox = require('sandbox');
-var reddit = require('redwrap');
-var jsdom = require("jsdom");
-var jquery = fs.readFileSync("./js/jquery.js", "utf-8");
+//var reddit = require('redwrap');
+global.jsdom = require("jsdom");
+global.jquery = fs.readFileSync("./js/jquery.js", "utf-8");
 var victor = fs.readFileSync("./node_modules/victor/index.js", "utf-8");
 
 commands['help'] = function(data){
@@ -41,7 +42,7 @@ commands['seen'] = function(data){
 	
 	databaseUUID(data.text,function(uuid){
 		redis.get('seen:' + uuid,function (err, reply){
-			data.respond(reply === null ? 'I\'ve never seen ' + data.text : 'I seen ' + data.text + ', '+ timeName(reply)+' ago.');
+			data.respond(reply === null ? 'I\'ve never seen ' + data.text : 'I seen ' + data.text + ', '+ timeName(reply) + ' ago.');
 		});
 	});
 }
@@ -213,15 +214,21 @@ commands['bestping'] = function(data){
 	data.respond(best + ': ' + ping +'ms');
 }
 commands['spawn'] = function(data){
+	data.respond('kys');
+}
+
+commands['base'] = function(data){
 	var text = '';
 	for(var i in spawnPlayers){
 		text+=', ' + spawnPlayers[i].name;
 	}
 	text = text.substr(2,text.length)
-	data.respond('Spawn: ' + (text || 'nobody') );
+	data.respond('Base: ' + (text || 'nobody') );
 }
 
 commands['pos'] = function(data){
+	data.respond('30 mil, 30 mil');
+	return ;
 	var name = data.text || data.name;
 	var uuid = getUUID(name);
 	var uc = getUUID(client.username);
@@ -311,49 +318,7 @@ commands['js'] = function(data){
 	});
 }
 
-commands['jew'] = function(data){
-	var lookup = data.text == '' ? '' : '/search.jsp?SEARCH=' + encodeURIComponent(data.text);
-	jsdom.env({
-		url: "http://jewornotjew.com/" + (lookup || "profile.jsp?RAND=1"),
-		src: [jquery],
-		done: function (err, window) {
-			var $ = window.$;
-			if($('#profileName').text()){
-				data.respond($('#profileName').text() + ': ' + $('#verdict').text() + ', ' + $('#profileBody').text());
-				return ;
-			}
-			
-			var link = $('.rowText0 a').attr('href');
-			if(!link){
-				data.respond(data.text + ': I dunno')
-				return;
-			}
-			jsdom.env({
-				url: "http://jewornotjew.com/" + link,
-				src: [jquery],
-				done: function (err, window) {
-					var $ = window.$;
-					data.respond($('#profileName').text() + ': ' + $('#verdict').text() + ', ' + $('#profileBody').text())
-				}
-			});
-		}
-	});
-}
 
-commands['trump'] = function(data){
-	jsdom.env({
-		url: "http://www.gallup.com/viz/v1/xml/6b9df319-97d6-4664-80e1-ea7fe4672aca/POLLFLEXCHARTVIZ/TRUMPJOBAPPR201617.aspx",
-		src: [jquery],
-		done: function (err, window) {
-			var $ = window.$;
-			var points = $('p');
-			var a = ~~$(points[points.length - 1]).text();
-			var d = ~~$(points[points.length - 2]).text();
-			data.respond('Approve: ' + a + '%, Disapprove: ' + d + '%, Unsure: ' + (100 - a - d)+ '%')
-			
-		}
-	});
-}
 
 commands['weather'] = function(data){
 	if(!data.text)return;
@@ -371,7 +336,7 @@ commands['weather'] = function(data){
 		});
 	});
 }
-
+/*
 commands['r'] = function(data){
 	reddit.r(data.text || '9b9t', function(err, json, res){
 		if(err)return;
@@ -383,12 +348,68 @@ commands['r'] = function(data){
 			return;
 		}
 	});	
-}
+}*/
 
 commands['shrug'] = function(data){
 	data.respond("¯\\_(ツ)_/¯");
 }
 
 commands['rules'] = function(data){
-	data.respond('No hacking. No greifing. No raiding. No swearing.');
+	data.respond('https://9b9t.press/rules');
 }
+
+commands['discord'] = function(data){
+	data.respond('https://discord.gg/efJCpws https://discord.gg/DjqwQdS');
+}
+
+commands['search'] = function(data){
+	if(data.text == 'child porn'){
+		data.respond('I\'M CALLING THE COPS ON YOUR ASS')
+		return ;
+	}
+	ddg.search({
+		q: data.text,
+		max: 1,
+		kp: -2
+	}, function(err, urls){
+		if(err || urls.length == 0){
+			data.respond(err ? err : 'No search results.');
+			return;
+		}
+		
+		data.respond(data.text+ ': ' + urls[0]);
+	})
+}
+
+
+commands['quote'] = function(data){
+	var name = data.text || data.name;
+	sql.query('SELECT * FROM `chatLog` WHERE `username` = ? ORDER BY RAND() LIMIT 1;', [name], function (e, r, f) {
+		data.respond(name + ': ' + (r[0] ? r[0].Message : 'Player Not found.'));
+	});
+}
+
+commands['lastwords'] = function(data){
+	var name = data.text || data.name;
+	sql.query('SELECT * FROM `chatLog` WHERE `username` = ? ORDER BY `ID` DESC LIMIT 1', [name], function (e, r, f) {
+		data.respond(name + ': ' + (r[0] ? r[0].Message : 'Player Not found.'));
+	});
+}
+
+commands['firstwords'] = function(data){
+	var name = data.text || data.name;
+	sql.query('SELECT * FROM `chatLog` WHERE `username` = ? ORDER BY `ID` LIMIT 1', [name], function (e, r, f) {
+		data.respond(name + ': ' + (r[0] ? r[0].Message : 'Player Not found.'));
+	});
+}
+
+commands['playtime'] = function(data){
+	var name = data.text || data.name;
+	sql.query('SELECT `playtime` FROM `players` WHERE `name` = ?', [name], function (e, r, f) {
+		data.respond(name + ': ' + (r[0] ? timeName(new Date() - r[0].playtime * 1000) : 'Player Not found.'));
+	});
+}
+
+setInterval(function(){
+	sql.query('UPDATE `players` SET `playtime` = `playtime` + 1 WHERE `uuid` IN (?)', [Object.keys(players)]);
+},1000);

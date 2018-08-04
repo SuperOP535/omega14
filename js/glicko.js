@@ -77,6 +77,7 @@ commands['rating'] = function(data){
 		});
 	});
 }
+/*
 commands['pvptop'] = pvptop;
 commands['toppvp'] = pvptop;
 
@@ -122,3 +123,4 @@ function realpvptop(data){
 		});
 	})
 }
+*/

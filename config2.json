@@ -1,26 +1,22 @@
 {
 	"timeout": 60000,
 	"client":{
-		"host": "9b9t.com",
-		"username": "-------",
-		"password": "-------",
-		"version": "1.11.2"
 	},
 	"mysql":{
 		"user": "omega14",
-		"host": "localhost",
-		"password": "--------",
+		"host": "172.17.0.1",
+		"password": "",
 		"database": "omega14",
 		"connectionLimit" : 2
 	},
-	"postConnect": "https://shitpost.pw?nick=omega",
 	"startBalance": 7500,
 	"giveouts": {},
 	"spam":{
 		"messages":[
 			"> Do !sjm to set join message and !slm to set leave message.",
-			"> Help, https://9b9t.press/help/",
-			"> If you have map art give it to omega14 so it can be posted on https://9b9t.press/map/"
+			"> Help, https://9b9t.press/help",
+			"> Discord, https://discord.gg/efJCpws https://discord.gg/DjqwQdS",
+			"> Make sure to read the rules, https://9b9t.press/rules"
 		],
 		"rate":60000
 	},
@@ -34,8 +30,16 @@
 		"max": 5
 	},
 	"chatDelay": 1000,
-	"ignore": [],
-	"admins":[],
+	"ignore": [
+	],
+	"mute":[
+		"907cc326-8590-4d4d-866c-5fa3d963481d",
+		"572daff8-379a-4a04-b9ed-51874110dc7e"
+	],
+	"admins":[
+		"1bbdd44d-0aef-407a-a558-39e76c58be19",
+		"d5c8fe96-bce2-4d33-9012-07566efb2d6b"
+	],
 	"deathMessages":[
 		"was slain by",
 		"was shot by",
@@ -97,18 +101,53 @@
 		"vol" : 0.06	
 	},
 	"proxy":{
-		"enable": false,
+		"enabled": true,
+		"online-mode": false,
 		"host": "127.0.0.1",
-		"version": "1.11.2"
+		"port": 6000,
+		"version": "1.12"
 	},
 	"factions":{
 		"cost": 1
 	},
-	
+	"buttons":{
+		"A":{
+			"location": {
+				"x": 2003885,
+				"y": 84,
+				"z": -10541
+			}, 
+			"type": 2298
+		},
+		"B":{
+			"location": {
+				"x": 2003885,
+				"y": 84,
+				"z": -10540
+			}, 
+			"type": 2298
+		},
+		"C":{
+			"location": {
+				"x": 2003885,
+				"y": 84,
+				"z": -10539
+			}, 
+			"type": 2298
+		},
+		"D":{
+			"location": {
+				"x": 2003799,
+				"y": 79,
+				"z": -10554
+			}, 
+			"type": 2298
+		}
+	},
 	"killCost": 5,
 	"sayCost": 5,
-	"weather": "------------",
-	"wolframalpha": "-----------------",
+	"weather": "",
+	"wolframalpha": "",
 	"commandRate": 5000,
 	"help": "Help, https://9b9t.press/help/",
 	"mapDir": "/var/www/html/maps/",

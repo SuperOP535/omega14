@@ -136,6 +136,15 @@ global.getRandom = function(low, high) {
 	return ~~(Math.random() * (high - low)) + low;
 }
 
+String.prototype.removeWhiteSpace = function(){
+	var str = this;
+	while(1){
+		var last = str;
+		var str = str.Replace('  ',' ');
+		if(last === str)return str;
+	}
+}
+
 global.randomArray = function(a){
 	return a[getRandom(0,a.length)];
 }

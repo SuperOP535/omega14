@@ -72,7 +72,6 @@ global.chatInput = function(packet) {
 
 function handeCommand(name,cmd,private,text){
 	if(config.ignore.indexOf(getUUID(name)) != -1)return;
-		
 	cmd = cmd.toLowerCase();
 	if(!(cmd in commands))return;
 	if(!isAdmin(name)){
@@ -145,7 +144,6 @@ function handleDialog(text){
 	var parts = text.split('> ');
 	var name = parts[0].substr(1);
 	//if(name == client.username)return true;
-
 	
 	parts.splice(0, 1);
 	var dialog = parts.join('> ');

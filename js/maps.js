@@ -12,35 +12,38 @@ commands['map'] = function(data){
 
 
 global.mapit = function(packet){
-	if(packet.data && packet.columns < 0){
-		var width = -packet.rows;
-		var height = -packet.columns;
-		
-		var rgb = new Buffer(width*height*3);
-		for (var x=0; x<height; x++) {
-			for (var y=0; y<width; y++) {
-				var opt = packet.data[x*width + y];
-				var color = codes[~~( opt /4)];
-				var per = 0.5;
-				var m = ((opt % 4) / 4) * (1 - per) + per
-				rgb[x*width*3 + y*3 + 0] = ~~(color[0] * m);
-				rgb[x*width*3 + y*3 + 1] = ~~color[1] * m;
-				rgb[x*width*3 + y*3 + 2] = ~~(color[2] * m);
+	var path = config.mapDir + packet.itemDamage + '.png';
+	fs.stat(path, function(err) {
+		if(packet.data && packet.columns < 0){
+			var width = -packet.rows;
+			var height = -packet.columns;
+			
+			var rgb = new Buffer(width*height*3);
+			for (var x=0; x<height; x++) {
+				for (var y=0; y<width; y++) {
+					var opt = packet.data[x*width + y];
+					var color = codes[~~( opt /4)];
+					var per = 0.5;
+					var m = ((opt % 4) / 4) * (1 - per) + per
+					rgb[x*width*3 + y*3 + 0] = ~~(color[0] * m);
+					rgb[x*width*3 + y*3 + 1] = ~~color[1] * m;
+					rgb[x*width*3 + y*3 + 2] = ~~(color[2] * m);
+				}
 			}
+			
+			var png = new PNG({
+				width: width,
+				height:height,
+				bitDepth: 8,
+				colorType: 2,
+				inputHasAlpha: false
+			});
+			png.data = rgb;
+			
+			png.pack().pipe(fs.createWriteStream(path));
+			if(err)chat.highlight(config.mapUrl + packet.itemDamage);
 		}
-		
-		var png = new PNG({
-			width: width,
-			height:height,
-			bitDepth: 8,
-			colorType: 2,
-			inputHasAlpha: false
-		});
-		png.data = rgb;
-		
-		png.pack().pipe(fs.createWriteStream(config.mapDir + packet.itemDamage + '.png'));
-		chat.highlight(config.mapUrl + packet.itemDamage);
-	}
+	});
 }
 
 var codes = [

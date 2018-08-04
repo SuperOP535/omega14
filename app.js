@@ -1,4 +1,5 @@
 global.fs = require('fs');
+
 global.config = JSON.parse(fs.readFileSync('config.json'));
 global.mineflayer = require('mineflayer');
 
@@ -19,11 +20,13 @@ require('./js/functions.js');
 require('./js/info.js');
 require('./js/chat.js');
 require('./js/basics.js');
+require('./js/spam.js');
 require('./js/mail.js');
 require('./js/glicko.js');
 require('./js/delta.js');
 require('./js/maps.js');
-require('./js/post.js');
+require('./js/base.js');
+
 require('./js/factions.js');
 require('./js/inventory.js');
 
@@ -65,11 +68,9 @@ client.on('connect', function() {
 
 client.on('login',function(packet){
 	user.login = packet;
-	//if(config.proxy.enable)require('./js/proxy.js');
-	//client.wite('hello world');
-	console.log(client)
 	client.write('chat', {message: 'hello world'});
 	chat.command('tps');
+	if(config.proxy.enabled)require('./js/proxy.js');
 });
 
 client.on('position',function(packet){
@@ -126,7 +127,26 @@ client.on('entity_destroy',function(packet){
 	}
 });
 
+client.on('update_health', function(packet) {
+	client.write('client_command', {payload: 0});
+});
 
+
+client.on('block_change',function(packet){
+	for(var i in config.buttons){
+		var button = config.buttons[i];
+		if(
+			button.location.x == packet.location.x && 
+			button.location.y == packet.location.y && 
+			button.location.z == packet.location.z &&
+			button.type  == packet.type
+		){
+			chat.highlight('Button ' + i + ' has been pressed.');
+			return ;
+		}
+	}
+});
+/*
 client.on('window_items',function(packet){
 	for(var i in packet.items){
 		var item = packet.items[i];
@@ -137,10 +157,10 @@ client.on('window_items',function(packet){
 		bot.clickWindow(-999,0,0,function(){});
 
 	}
-});
+});*/
 
 var eatMode = false;
-
+/*
 client.on('set_slot',function(packet){
 	if(packet.item.blockId == -1)return;
 	setTimeout(function(){
@@ -148,11 +168,10 @@ client.on('set_slot',function(packet){
 		bot.clickWindow(-999,0,0,function(){});
 	}, 3000);
 });
-
 commands['eat'] = function(data){
 	eatMode = !eatMode;
 	data.respond('Eat Mode: ' + (eatMode ? 'On' : 'Off'))
-}
+}*/
 
 client.on('update_time',function(packet){
 	age = packet.time[1];

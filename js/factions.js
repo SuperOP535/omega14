@@ -215,6 +215,8 @@ global.getPlayerFactions = function(name,callback){
 
 
 commands['kill'] = function(data){
+	data.respond('kys');
+	return ;
 	pay(data.name,client.username, config.killCost, function(pass){
 		if(pass){
 			data.respond(data.name + ': Congratulations, you just killed omega14.');
