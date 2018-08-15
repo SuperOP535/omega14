@@ -1,6 +1,6 @@
 global.fs = require('fs');
 
-global.config = JSON.parse(fs.readFileSync('config.json'));
+global.config = require('./config2');
 global.mineflayer = require('mineflayer');
 
 global.mc = require('minecraft-protocol');
@@ -46,7 +46,7 @@ global.user = {
 };
 
 
-function timeout(){
+function timeout() {
 	console.log('Time Out');
 	process.exit();
 }
@@ -66,18 +66,18 @@ client.on('connect', function() {
 	console.log('connected');
 });
 
-client.on('login',function(packet){
+client.on('login', function(packet) {
 	user.login = packet;
 	client.write('chat', {message: 'hello world'});
 	chat.command('tps');
 	if(config.proxy.enabled)require('./js/proxy.js');
 });
 
-client.on('position',function(packet){
+client.on('position', function(packet) {
 	user.pos = packet;
 });
 
-client.on('packet', function(data, meta){
+client.on('packet', function(data, meta) {
 	clearTimeout(timeoutkill);
 	global.timeoutkill = setTimeout(timeout,config.timeout);
 });
@@ -97,7 +97,7 @@ client.on('error', function(err) {
 	process.exit();
 });
 
-client.on('named_entity_spawn',function(packet){
+client.on('named_entity_spawn', function(packet) {
 	spawnPlayers[packet.entityId] = {
 		uuid: packet.playerUUID,
 		name: players[packet.playerUUID].name,
@@ -109,7 +109,7 @@ client.on('named_entity_spawn',function(packet){
 	};
 });
 
-client.on('entity_teleport',function(packet){
+client.on('entity_teleport', function(packet) {
 	if(!spawnPlayers[packet.entityId])return;
 	spawnPlayers[packet.entityId].pos = {
 		x: packet.x,
@@ -118,7 +118,7 @@ client.on('entity_teleport',function(packet){
 	} 
 });
 
-client.on('entity_destroy',function(packet){
+client.on('entity_destroy', function(packet) {
 	for(var i in packet.entityIds){
 		var id = packet.entityIds[i];
 		if(spawnPlayers[id]){
@@ -132,7 +132,7 @@ client.on('update_health', function(packet) {
 });
 
 
-client.on('block_change',function(packet){
+client.on('block_change', function(packet) {
 	for(var i in config.buttons){
 		var button = config.buttons[i];
 		if(
@@ -141,8 +141,7 @@ client.on('block_change',function(packet){
 			button.location.z == packet.location.z &&
 			button.type  == packet.type
 		){
-			chat.highlight('Button ' + i + ' has been pressed.');
-			return ;
+			return chat.highlight('Button ' + i + ' has been pressed.');
 		}
 	}
 });
@@ -173,19 +172,17 @@ commands['eat'] = function(data){
 	data.respond('Eat Mode: ' + (eatMode ? 'On' : 'Off'))
 }*/
 
-client.on('update_time',function(packet){
+client.on('update_time', function(packet) {
 	age = packet.time[1];
 });
 
 client.on('map', mapit);
 
-client.on('player_info',playerInfo);
+client.on('player_info', playerInfo);
 
-client.on('chat',chatInput);
+client.on('chat', chatInput);
 
 process.on('uncaughtException', function(err) {
 	if(err.toString() == 'Error: Deserialization error for handshaking.toServer : Read error for name : 122 is not in the mappings value')return;
     console.log(err.stack);
 });
-
-
